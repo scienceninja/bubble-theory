@@ -42,6 +42,11 @@ def main():
                     "integration": "Euler-Maruyama", "float_type": "float64",
                     "rng": "numpy.default_rng / PCG64 via SeedSequence([seed,stream])",
                     "time_windows": [[0,100],[100,150],[150,200],[200,250]]}
+    root = Path(__file__).resolve().parents[2]
+    tracked = sorted([*root.glob("src/bubble_theory/*.py"), *root.glob("analysis/*.py"),
+                      *root.glob("preregistrations/*.md"), root / "pyproject.toml"])
+    run_metadata["source_sha256"] = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in tracked}
     (out / "run_metadata.json").write_text(json.dumps(run_metadata, indent=2) + "\n")
     rows = []
     for seed in range(30):
